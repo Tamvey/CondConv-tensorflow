@@ -1,12 +1,13 @@
 import os
 import progressbar
 import tensorflow as tf
+import matplotlib.pyplot as plt
+import numpy as np
 
-
-class Trainer:
+class Trainer(tf.Module):
     def __init__(self, model, optimizer, epochs, train_batch, val_batch, train_data, val_data, log_dir, model_save_path, train_batch_num,
                  val_batch_num):
-
+        super().__init__()
         self.model = model
         self.optimizer = optimizer
         self.epochs = epochs
@@ -52,9 +53,9 @@ class Trainer:
         pbar = progressbar.ProgressBar(widgets=pwidgets, max_value=self.train_batch_num,
                                        prefix="Epoch {}/{}: ".format(curr_epoch, self.epochs)).start()
 
-        self.train_loss.reset_states()
-        self.train_accuracy_top1.reset_states()
-        self.train_accuracy_top5.reset_states()
+        self.train_loss.reset_state()
+        self.train_accuracy_top1.reset_state()
+        self.train_accuracy_top5.reset_state()
 
         for batch, (images, labels) in enumerate(self.train_data):
             loss = self.train_step(images, labels)
@@ -84,9 +85,9 @@ class Trainer:
                     progressbar.Variable('Top5', width=2, precision=4), ", ", progressbar.Variable('Loss', width=2, precision=4)]
         pbar = progressbar.ProgressBar(widgets=pwidgets, max_value=self.val_batch_num, prefix="Val: ").start()
 
-        self.val_loss.reset_states()
-        self.val_accuracy_top1.reset_states()
-        self.val_accuracy_top5.reset_states()
+        self.val_loss.reset_state()
+        self.val_accuracy_top1.reset_state()
+        self.val_accuracy_top5.reset_state()
 
         for batch, (images, labels) in enumerate(self.val_data):
             self.validate_step(images, labels)
@@ -107,13 +108,20 @@ class Trainer:
         self.val_accuracy_top1(y_true=labels, y_pred=predictions)
         self.val_accuracy_top5(y_true=labels, y_pred=predictions)
 
-    def __call__(self, resume=False, val=False):
+
+    def __call__(self, resume=False, val=False, test=False):
         best_top1 = 0
         start_epoch = 0
 
         checkpoint = tf.train.Checkpoint(model=self.model, optimizer=self.optimizer, best_top1=tf.Variable(0), epoch=tf.Variable(0))
         checkpointManager = tf.train.CheckpointManager(checkpoint, directory=self.model_save_path, max_to_keep=1,
                                                        checkpoint_name="model_best.ckpt")
+        
+        if test:
+            checkpoint.restore(checkpointManager.latest_checkpoint)
+            self.debug_validate_step()
+            return
+
         if resume:
             checkpoint.restore(checkpointManager.latest_checkpoint)
             best_top1 = checkpoint.best_top1.numpy()
@@ -148,6 +156,16 @@ class Trainer:
 
             checkpoint.epoch.assign_add(1)
 
+    def debug_validate_step(self):
+        for batch, (images, labels) in enumerate(self.val_data):
+            predictions = self.model(images, training=False)
+            s = len(images)
+            for i in range(s):
+                print(predictions[i])
+                plt.imshow(images[i])
+                print(labels[i])
+                print()
+        
 
 class DisTrainer(Trainer):
     def __init__(self, strategy, *args, **kwargs):

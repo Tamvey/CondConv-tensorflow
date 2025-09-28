@@ -55,6 +55,10 @@ parser.add_argument("--logs_path",
                     type=str,
                     default="./logs"
                     )
+parser.add_argument("--test",
+                    type=bool,
+                    default=False
+                    )
 # list of available gpu
 parser.add_argument("--gpu_ids",
                     nargs='+',

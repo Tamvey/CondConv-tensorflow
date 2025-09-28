@@ -52,7 +52,7 @@ class Model:
                           log_dir=self.log_dir, model_save_path=self.model_save_path, train_batch_num=train_batch_num,
                           val_batch_num=val_batch_num)
 
-        trainer(resume=self.args.resume, val=self.args.val)
+        trainer(resume=self.args.resume, val=self.args.val, test=self.args.test)
 
     def distribute_run(self):
         strategy = tf.distribute.MirroredStrategy()
