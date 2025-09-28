@@ -161,9 +161,11 @@ class Trainer(tf.Module):
             predictions = self.model(images, training=False)
             s = len(images)
             for i in range(s):
-                print(predictions[i])
-                plt.imshow(images[i])
+                v = predictions[i].numpy()
+                softmax = tf.nn.softmax(v)
                 print(labels[i])
+                print(softmax)
+                plt.imshow(images[i])
                 print()
         
 

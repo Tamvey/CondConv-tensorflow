@@ -1,14 +1,14 @@
-# Логи
+# 
 logs/
 *.log
 
-# Виртуальные окружения
+# 
 tensorflow220/
 venv/
 env/
 .venv/
 
-# Кэш Python
+# 
 __pycache__/
 *.py[cod]
 *$py.class
@@ -95,27 +95,25 @@ venv.bak/
 .ropeproject
 
 # VS Code
-.vscode/
+#.vscode/
 
 # PyCharm
 .idea/
 
-# Checkpoints и модели машинного обучения
-models/
+# Checkpoints 
+#models/
 checkpoints/
 *.h5
 *.hdf5
 *.ckpt
 *.pb
-saved_model/
 
-# Дампы памяти и профилирование
+# 
 *.prof
 *.mprof
 
-# Dataset files (если они большие)
+# Dataset files 
 *.csv
-*.json
 *.npz
 *.npy
 
