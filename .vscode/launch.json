@@ -10,14 +10,26 @@
             "type": "debugpy",
             "request": "launch",
             "program": "main.py",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--arch", "cond_cifar_resnet",
+                "--num_layers", "56", 
+                "--num_experts", "3",
+                "--dataset", "cifar10", 
+                "--num_classes", "10",
+                "--epochs", "100",
+                "--resume"
+            ]
+            
         },
         {
             "name": "Python Debugger: test.py",
             "type": "debugpy",
             "request": "launch",
             "program": "test.py",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "justMyCode": false,
         },
         {
             "name": "Python Debugger: main.py with --test",
@@ -25,13 +37,15 @@
             "request": "launch",
             "program": "main.py",
             "console": "integratedTerminal",
+            "justMyCode": false,
             "args": [
                 "--arch", "cond_cifar_resnet",
                 "--num_layers", "56", 
                 "--num_experts", "3",
                 "--dataset", "cifar10", 
                 "--num_classes", "10",
-                "--test", "true"
+                "--test", "true",
+                "--resume"
             ]
         }
     ]
